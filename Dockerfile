@@ -33,7 +33,7 @@ RUN R -e 'devtools::install_version("base64enc", version = "0.1-3")' \
 RUN R -e 'devtools::install_url("https://www.rforge.net/Rserve/snapshot/Rserve_1.8-6.tar.gz")'
 
 # install RestRserve
-RUN R -e 'devtools::install_github("mattjvincent/RestRserve", ref = "v0.1.5")'
+RUN R -e 'devtools::install_github("mattjvincent/RestRserve", ref = "v0.2.0")'
 
 EXPOSE 8001
 
