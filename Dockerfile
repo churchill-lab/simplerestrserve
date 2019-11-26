@@ -1,12 +1,13 @@
 FROM r-base:3.6.1
 LABEL maintainer="Matthew Vincent <matt.vincent@jax.org>" \
-	  version="0.1.0"
+	  version="0.2.0"
 
 ENV R_FORGE_PKGS Rserve
 ENV R_CRAN_PKGS Rcpp R6 uuid checkmate mime jsonlite
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+        libcurl4-openssl-dev \
         libssl-dev \
         libjemalloc-dev && \
     install2.r -r http://www.rforge.net/ $R_FORGE_PKGS && \
