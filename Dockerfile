@@ -3,7 +3,7 @@ LABEL maintainer="Matthew Vincent <matt.vincent@jax.org>" \
 	  version="0.2.0"
 
 ENV R_FORGE_PKGS Rserve
-ENV R_CRAN_PKGS Rcpp R6 uuid checkmate mime jsonlite
+ENV R_CRAN_PKGS Rcpp R6 uuid checkmate mime jsonlite remotes
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -17,8 +17,6 @@ RUN apt-get update && \
 
 # https://github.com/jemalloc/jemalloc
 ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/libjemalloc.so
-
-RUN R -e 'install.packages("remotes")'
 
 # install RestRserve
 RUN R -e 'remotes::install_github("rexyai/RestRserve@dev")'
