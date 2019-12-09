@@ -13,7 +13,7 @@ hello_handler = function(request, response) {
 }
 
 # handle query parameter
-heelo_query_handler = function(request, response) {
+hello_query_handler = function(request, response) {
     # user name
     name = request$parameters_query[["name"]]
   
@@ -21,7 +21,7 @@ heelo_query_handler = function(request, response) {
     if (is.null(name)) {
         name = "anonymous"
     }
-  
+
     response$body = sprintf("Hello, %s!", name)
 }
 
@@ -49,7 +49,7 @@ application$add_get(
 
 application$add_get(
     path = "/hello/query",
-    FUN = heelo_query_handler
+    FUN = hello_query_handler
 )
 
 application$add_get(
@@ -61,4 +61,10 @@ application$add_get(
 
 ## ---- start application ----
 backend = BackendRserve$new()
-backend$start(application, http_port = 8001)
+backend$start(application, 
+              http_port = 8001, 
+              encoding = "utf8", 
+              port = 6311, 
+              daemon = "disable", 
+              pid.file = "Rserve.pid")
+
