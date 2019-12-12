@@ -4,6 +4,42 @@
 
 library(RestRserve)
 
+## ---- add some middleware ----
+
+library(memCompression)
+
+middleware_gzip <- Middleware$new(
+    process_request = function(request, response) {
+        msg = list(
+            middleware = "middleware_gzip",
+            request_id = request$id,
+            timestamp = Sys.time()
+        )
+        msg = to_json(msg)
+        cat(msg, sep = '\n')
+    },
+    process_response = function(request, response) {
+        enc = request$get_header("accept-encoding")
+
+        if (!is.null(enc) && any(grepl("gzip", enc))) {
+            response$set_header("Content-encoding", "gzip")
+            raw<-charToRaw(response$body)
+            response$set_body(memCompression::compress(raw, "gzip"))
+            response$encode = identity
+        }
+    
+        msg = list(
+            middleware = "middleware_gzip",
+            request_id = request$id,
+            timestamp = Sys.time()
+        )
+        
+        msg = to_json(msg)
+        cat(msg, sep = '\n')
+    },
+    id = "gzip"
+)
+
 
 ## ---- create handler for the HTTP requests ----
 
@@ -15,21 +51,31 @@ hello_handler = function(request, response) {
 # handle query parameter
 hello_query_handler = function(request, response) {
     # user name
-    name = request$parameters_query[["name"]]
+    name <- request$parameters_query[["name"]]
   
     # default value
     if (is.null(name)) {
         name = "anonymous"
     }
 
-    response$body = sprintf("Hello, %s!", name)
+    response$body <- sprintf("Hello, %s!", name)
 }
 
 # handle path variable
 hello_path_handler = function(request, response) {
     # user name
-    name = request$parameters_path[["name"]]
-    response$body = sprintf("Hello, %s!", name)
+    name <- request$parameters_path[["name"]]
+    response$body <- sprintf("Hello, %s!", name)
+}
+
+
+istalled_packages_handler = function(request, response) {
+    response$content_type <- "application/json"
+
+    ip <- as.data.frame(installed.packages()[,c(1,3:4)])
+    rownames(ip) <- NULL
+    ip <- ip[is.na(ip$Priority),1:2,drop=FALSE]
+    response$body <- jsonlite::toJSON(ip)    
 }
 
 
@@ -39,6 +85,7 @@ application = Application$new(
     content_type = "text/plain"
 )
 
+application$append_middleware(middleware_gzip)
 
 ## ---- register endpoints and corresponding R handlers ----
 
@@ -58,6 +105,10 @@ application$add_get(
     match = "regex"
 )
 
+application$add_get(
+    path = "/ip",
+    FUN = istalled_packages_handler
+)
 
 ## ---- start application ----
 backend = BackendRserve$new()

@@ -21,6 +21,8 @@ ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/libjemalloc.so
 # install RestRserve
 RUN R -e 'remotes::install_github("rexyai/RestRserve@dev")'
 
+RUN R -e 'remotes::install_github("mattjvincent/memCompression")'
+
 EXPOSE 8001
 
 SHELL ["/bin/bash", "-c"]
