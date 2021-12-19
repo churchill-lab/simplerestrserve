@@ -1,4 +1,4 @@
-FROM r-base:4.1.2
+FROM rocker/r-ver:4.1
 LABEL maintainer="Matthew Vincent <matt.vincent@jax.org>" \
 	  version="0.5.0"
 
@@ -10,7 +10,8 @@ RUN apt-get update && \
         ca-certificates \
         libcurl4-openssl-dev \
         libssl-dev \
-        libjemalloc-dev && \
+        libjemalloc-dev \
+        zlib1g-dev && \
     install2.r -r http://www.rforge.net/ $R_FORGE_PKGS && \
     install2.r $R_CRAN_PKGS && \
     apt-get clean && \
@@ -20,8 +21,8 @@ RUN apt-get update && \
 ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/libjemalloc.so
 
 # install RestRserve
-RUN R -e 'remotes::install_github("rexyai/RestRserve@v0.4.1")'
-RUN R -e 'remotes::install_github("mattjvincent/memCompression")'
+RUN R -e 'remotes::install_github("rexyai/RestRserve@v0.4.1")' \
+ && R -e 'remotes::install_github("mattjvincent/memCompression")'
 
 EXPOSE 8001
 
