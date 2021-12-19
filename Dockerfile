@@ -1,12 +1,13 @@
 FROM r-base:4.1.2
 LABEL maintainer="Matthew Vincent <matt.vincent@jax.org>" \
-	  version="0.4.0"
+	  version="0.5.0"
 
 ENV R_FORGE_PKGS Rserve
 ENV R_CRAN_PKGS Rcpp R6 uuid checkmate mime jsonlite remotes
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+        ca-certificates \
         libcurl4-openssl-dev \
         libssl-dev \
         libjemalloc-dev && \
