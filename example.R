@@ -69,7 +69,7 @@ hello_path_handler = function(request, response) {
 }
 
 
-istalled_packages_handler = function(request, response) {
+installed_packages_handler = function(request, response) {
     response$content_type <- "application/json"
 
     ip <- as.data.frame(installed.packages()[,c(1,3:4)])
@@ -106,16 +106,19 @@ application$add_get(
 )
 
 application$add_get(
-    path = "/ip",
-    FUN = istalled_packages_handler
+    path = "/packages",
+    FUN = installed_packages_handler
 )
 
 ## ---- start application ----
-backend = BackendRserve$new()
-backend$start(application, 
-              http_port = 8001, 
-              encoding = "utf8", 
-              port = 6311, 
-              daemon = "disable", 
-              pid.file = "Rserve.pid")
+backend = BackendRserve$new(
+    content_type = 'application/json'
+)
+backend$start(
+    application, 
+    http_port = 8001, 
+    encoding  = "utf8", 
+    port      = 6311, 
+    daemon    = "disable", 
+    pid.file  = "Rserve.pid")
 
