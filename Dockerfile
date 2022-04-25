@@ -1,6 +1,6 @@
 FROM rocker/r-ver:4.1
-LABEL maintainer="Matthew Vincent <matt.vincent@jax.org>" \
-	  version="0.5.0"
+LABEL author="Matthew Vincent <mattjvincent@gmail.com>"
+LABEL version="1.0.0"
 
 ENV R_FORGE_PKGS Rserve
 ENV R_CRAN_PKGS Rcpp R6 uuid checkmate mime jsonlite remotes
@@ -21,7 +21,7 @@ RUN apt-get update && \
 ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/libjemalloc.so
 
 # install RestRserve
-RUN R -e 'remotes::install_github("rexyai/RestRserve@v0.4.1")' \
+RUN R -e 'remotes::install_github("rexyai/RestRserve@v1.1.1")' \
  && R -e 'remotes::install_github("mattjvincent/memCompression")'
 
 EXPOSE 8001
