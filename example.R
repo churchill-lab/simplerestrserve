@@ -121,4 +121,3 @@ backend$start(
     port      = 6311, 
     daemon    = "disable", 
     pid.file  = "Rserve.pid")
-

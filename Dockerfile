@@ -1,9 +1,9 @@
-FROM rocker/r-ver:4.1
-LABEL author="Matthew Vincent <mattjvincent@gmail.com>"
-LABEL version="1.0.0"
+FROM rocker/r-ver:4.3
 
+ARG TARGETPLATFORM
+
+ENV R_CRAN_PKGS Rcpp remotes R6 uuid checkmate mime jsonlite digest
 ENV R_FORGE_PKGS Rserve
-ENV R_CRAN_PKGS Rcpp R6 uuid checkmate mime jsonlite remotes
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -18,10 +18,16 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # https://github.com/jemalloc/jemalloc
-ENV LD_PRELOAD /usr/lib/x86_64-linux-gnu/libjemalloc.so
+
+RUN if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
+      export LD_PRELOAD=/usr/lib/aarch64-linux-gnu/libjemalloc.so ; \
+    elif [ "$TARGETPLATFORM" = "linux/amd64" ]; then \
+      export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so ; \
+    fi
+
 
 # install RestRserve
-RUN R -e 'remotes::install_github("rexyai/RestRserve@v1.1.1")' \
+RUN R -e 'install.packages("RestRserve")' \
  && R -e 'remotes::install_github("mattjvincent/memCompression")'
 
 EXPOSE 8001
@@ -36,3 +42,4 @@ WORKDIR $INSTALL_PATH
 COPY example.R $INSTALL_PATH/example.R
 
 CMD ["Rscript", "/example/R/example.R"]
+
