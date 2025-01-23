@@ -25,6 +25,7 @@ middleware_gzip <- Middleware$new(
             response$set_header("Content-encoding", "gzip")
             raw<-charToRaw(response$body)
             response$set_body(memCompression::compress(raw, "gzip"))
+            #response$set_body(memCompress(response$body, "gzip"))
             response$encode = identity
         }
     

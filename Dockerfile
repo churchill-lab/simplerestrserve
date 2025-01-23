@@ -1,14 +1,24 @@
-FROM rocker/r-ver:4.3
+FROM rocker/r-ver:4.4
 
 ARG TARGETPLATFORM
 
-ENV R_CRAN_PKGS Rcpp remotes R6 uuid checkmate mime jsonlite digest
-ENV R_FORGE_PKGS Rserve
+ENV R_CRAN_PKGS="Rcpp \
+    remotes \
+    R6 \
+    uuid \
+    checkmate \
+    mime \
+    jsonlite \
+    digest"
+
+ENV R_FORGE_PKGS=Rserve
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         ca-certificates \
         libcurl4-openssl-dev \
+        libfontconfig1-dev \
+        libfreetype6-dev \
         libssl-dev \
         libjemalloc-dev \
         zlib1g-dev && \
@@ -34,7 +44,7 @@ EXPOSE 8001
 
 SHELL ["/bin/bash", "-c"]
 
-ENV INSTALL_PATH /example/R
+ENV INSTALL_PATH=/example/R
 RUN mkdir -p $INSTALL_PATH
 
 WORKDIR $INSTALL_PATH
